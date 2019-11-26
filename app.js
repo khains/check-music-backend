@@ -4,6 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const apiRouter = require('./routers/api');
 
+
 const app = express();
 
 app.use(cors({ origin: ['http://localhost:3000'] , credentials : true }));
@@ -17,6 +18,8 @@ mongoose.connect('mongodb://khains:sykhai123@ds243148.mlab.com:43148/do-an-2019'
         console.log(" DB connect success!");
     }
 })
+
+
 
 app.use('/api', apiRouter);
 

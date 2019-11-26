@@ -6,9 +6,12 @@ const MusicSchema = new Schema({
         type : String,
         required : true
     },
-    singer: {
+    hashmp3: {
         type : String,
-        required : true
+        required : true,
+        unique : true
     }
     
 })
+
+module.exports = mongoose.model('Music' ,MusicSchema)

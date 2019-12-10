@@ -17,6 +17,7 @@ UserRouter.post('/', (req, res) => {
             res.status(201).json({
                 success: true,
                 data: userCreated,
+                message: "Tạo tài khoản thành công!!!"
             })
 
         }).catch(error => {
@@ -24,6 +25,7 @@ UserRouter.post('/', (req, res) => {
             res.status(500).json({
                 success: false,
                 error,
+                message: "Tạo thất bại!!!"
             })
         })
 })

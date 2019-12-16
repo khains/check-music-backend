@@ -92,7 +92,7 @@ UserRouter.put('/:userId', (req, res) => {
         })
 })
 //Delete
-UserRouter.get('/:userId', (req, res) => {
+UserRouter.delete('/:userId', (req, res) => {
     const userId = req.params.userId;
     userModel.findByIdAndDelete(userId)
         .then(user => {

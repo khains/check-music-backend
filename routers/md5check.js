@@ -34,7 +34,7 @@ md5checkRouter.post('/', mp3Uploader.single('mp32'), async (req, res) => {
                 if(data[i]._hashMusic === hashmp3){
                     return res.json({
                         success: 1,
-                        message: "Là nhạc original!!!"
+                        message: "Là nhạc chất lượng cao!!!"
                     })
                 }
             }
@@ -43,7 +43,7 @@ md5checkRouter.post('/', mp3Uploader.single('mp32'), async (req, res) => {
         })
         res.json({
             success: 0,
-            message: "Không phải nhạc original!!!"
+            message: "Không phải nhạc chất lượng cao!!!"
         })
     })
     

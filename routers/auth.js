@@ -16,19 +16,19 @@ AuthRouter.post('/login', (req, res) => {
     if (!username || !password) {
         res.json({ 
             success: 0, 
-            message: 'thieu username hoac password'
+            message: 'Thiếu username hoặc password'
          });
     }
     userModel.findOne({ username })
         .then(userFound => {
             if (!userFound || !userFound._id) {
-                res.json({ success: 0, message: 'khong ton tai nguoi dung co username tren' });
+                res.json({ success: 0, message: 'Không tồn tại người dùng có username trên' });
             } else {
                 if (bcrypt.compareSync(password, userFound.password)) {
                     const access_token = jwt.sign({username , id : userFound._id}, jwtSecret)//create token
                     res.json({ 
                         success: 1, 
-                        message: 'dang nhap thanh cong !' ,
+                        message: 'Đăng nhập thành công !' ,
                         access_token,
                         user : {
                             username,
@@ -39,7 +39,7 @@ AuthRouter.post('/login', (req, res) => {
                 } else {
                     res.json({ 
                         success: 0,
-                        message: 'sai password !' 
+                        message: 'Sai password !' 
 
                     });
                 }

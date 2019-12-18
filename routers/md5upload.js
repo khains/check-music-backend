@@ -19,39 +19,78 @@ md5Router.post('/', mp3Uploader.single('mp32'), (req, res) => {
     // console.log(newFullPath);
     
     md5File(newFullPath, async (err, hash) => {
-        // if (err) throw err
+        if (err) throw err
 
-        console.log(`The MD5 sum of ${orgName} is: ${hash}`)
+        console.log(`The hash ${orgName} is: ${hash}`)
         const name = orgName;
         const hashmp3 = `${hash}`;
-        const accounts = await web3.eth.getAccounts();
-        await musicContract.methods.setMusic(hashmp3).send({ from: accounts[0], gas: 150000 })
-        .then((data) => {
+        musicModel.findOne({"hashmp3": hashmp3})
+        .then(async data => {
             console.log(data);
-            musicModel.create({ name, hashmp3 })
-            .then(hashmp3Created => {
-                console.log(hashmp3Created);
-                res.status(201).json({
-                    success: true,
-                    message: 'File upload success!!!',
-                    data: hashmp3Created,
-                })
-    
-            }).catch(error => {
-                console.log(error);
-                res.status(501).json({
+            if(data){
+                res.json({
                     success: false,
-                    message: "File đã được tải lên, hãy chọn file khác!!!",
-                    error,
+                    message: 'File đã được tải lên trước đó, hãy chọn file khác!!!',
                 })
-            })
-          })
+                fs.unlinkSync(newFullPath);
+            }
+            else{
+                const accounts = await web3.eth.getAccounts();
+                await musicContract.methods.setMusic(hashmp3).send({ from: accounts[0], gas: 150000 })
+                    .then((data) => {
+                        console.log(data);
+                        musicModel.create({ name, hashmp3 })
+                            .then(hashmp3Created => {
+                                console.log(hashmp3Created);
+                                res.status(201).json({
+                                    success: true,
+                                    message: 'File tải lên thành công!!!',
+                                    data: hashmp3Created,
+                                })
+
+                            }).catch(error => {
+                                console.log(error);
+                                res.status(501).json({
+                                    success: false,
+                                    message: "File đã được tải lên, hãy chọn file khác!!!",
+                                    error,
+                                })
+                            })
+                    }).catch(err => {
+                        console.log(err);
+                    })
+            }
+        })
+        // const accounts = await web3.eth.getAccounts();
+        // await musicContract.methods.setMusic(hashmp3).send({ from: accounts[0], gas: 150000 })
+        // .then((data) => {
+        //     console.log(data);
+        //     musicModel.create({ name, hashmp3 })
+        //     .then(hashmp3Created => {
+        //         console.log(hashmp3Created);
+        //         res.status(201).json({
+        //             success: true,
+        //             message: 'File upload success!!!',
+        //             data: hashmp3Created,
+        //         })
+    
+        //     }).catch(error => {
+        //         console.log(error);
+        //         res.status(501).json({
+        //             success: false,
+        //             message: "File đã được tải lên, hãy chọn file khác!!!",
+        //             error,
+        //         })
+        //     })
+        //   }).catch(err => {
+        //     console.log(err);
+        //   })
             
         })
     
-    res.send({
-        status: true,
-        message: 'file uploaded',
-    })
+    // res.json({
+    //     status: true,
+    //     message: 'Tải file lên thành công!!!',
+    // })
 })
 module.exports = md5Router;

@@ -10,24 +10,39 @@ UserRouter.post('/', (req, res) => {
     const { username, email, password } = req.body;
 
     const hashPassword =  bcrypt.hashSync(password,12);
-
-    userModel.create({ username, email, password : hashPassword })
-        .then(userCreated => {
-            console.log(userCreated);
-            res.status(201).json({
-                success: true,
-                data: userCreated,
-                message: "Tạo tài khoản thành công!!!"
-            })
-
-        }).catch(error => {
-            console.log(error);
-            res.status(500).json({
+    
+    userModel.findOne({$or: [{"email": email}, {"username":username}]})
+    .then(data => {
+        console.log("Email hoặc username đã tồn tại!!!");
+        console.log(data);
+        if(data){
+            res.json({
                 success: false,
-                error,
-                message: "Tạo thất bại!!!"
+                message: "Email hoặc username đã tồn tại!!!"
             })
-        })
+        }
+        else{
+            userModel.create({ username, email, password: hashPassword })
+                .then(userCreated => {
+                    console.log("Tạo tài khoản thành công!!!");
+                    console.log(userCreated);
+                    res.status(201).json({
+                        success: true,
+                        data: userCreated,
+                        message: "Tạo tài khoản thành công!!!"
+                    })
+
+                }).catch(error => {
+                    console.log(error);
+                    res.status(500).json({
+                        success: false,
+                        error,
+                        message: "Tạo thất bại!!!"
+                    })
+                })
+        }
+    })
+    
 })
 
 // Getlist
